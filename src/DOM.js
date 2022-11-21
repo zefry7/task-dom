@@ -5,6 +5,14 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    const b = document.getElementsByTagName('body')[0];
+
+    for (let i = 0; i < count; ++i) {
+        const a = document.createElement(tag + '');
+        a.innerHTML = content;
+
+        b.insertAdjacentElement('afterbegin', a);
+    }
 }
 
 /*
@@ -15,6 +23,33 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    const bo = document.createElement('div');
+    bo.className = 'item_1';
+
+    for (let i = 2; i <= level; ++i) {
+        const b = document.createElement('div');
+        b.className = 'item_' + i;
+
+        let t = i - 1;
+
+        if (bo.querySelector('.item_' + t) != null) {
+            bo.querySelector('.item_' + t).insertAdjacentElement(
+                'afterbegin',
+                b.cloneNode(true),
+            );
+        } else {
+            bo.insertAdjacentElement('afterbegin', b.cloneNode(true));
+        }
+    }
+
+    for (let i = level; i > 1; --i) {
+        for (let j = 1; j < childrenCount; ++j) {
+            const a = bo.querySelector('.item_' + i).cloneNode(true);
+            bo.querySelector('.item_' + i).insertAdjacentElement('afterend', a);
+        }
+    }
+
+    return bo;
 }
 
 /*
@@ -26,4 +61,17 @@ export function generateTree(childrenCount, level) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function replaceNodes() {
+    let a = generateTree(2, 3);
+    const b = a.querySelectorAll('.item_2');
+
+    for (let i = 0; i < 2; ++i) {
+        const w = document.createElement('section');
+
+        w.innerHTML = b[i].innerHTML;
+        w.className = b[i].getAttribute('class');
+
+        b[i].parentNode.replaceChild(w, b[i]);
+    }
+
+    return a;
 }
